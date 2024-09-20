@@ -1,0 +1,56 @@
+# Global ignores
+*.log
+*.tmp
+*.cache
+*.bak
+*.swp
+*.swo
+*.DS_Store
+*.env
+.env.*
+.vscode/
+.idea/
+node_modules/
+dist/
+coverage/
+
+
+# Backend-specific ignores
+/backend/__pycache__/
+/backend/*.py[cod]
+/backend/.env
+/backend/.venv
+/backend/venv/
+/backend/.pytest_cache/
+/backend/.mypy_cache/
+/backend/.coverage
+/backend/instance/
+/backend/.env.*
+
+# Frontend-specific ignores
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env
+/frontend/.cache/
+/frontend/.next/
+/frontend/build/
+/frontend/out/
+
+# Ignore build and dependency folders from the root
+**/node_modules/
+**/dist/
+**/build/
+/frontend/yarn.lock
+
+# Docker-related ignores
+docker-compose.override.yml
+.dockerignore
+
+# Ignore any local editor/IDE settings
+*.iml
+*.sublime-project
+*.sublime-workspace
+.vscode/
+.idea/
+*.swp
+*.swo
