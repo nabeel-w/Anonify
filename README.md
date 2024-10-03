@@ -125,7 +125,7 @@ That's it! Anonify is now up and running on your local machine, ready to help yo
 - **Aditya Raj**
 - **Nabeel Wasif**
 - **Swaraat Chatterjee**
-- **Syed Abdul Mannan**
+- **Ritika Keshri**
 
 ## Video Tutorial
 
