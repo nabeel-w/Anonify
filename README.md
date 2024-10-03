@@ -122,10 +122,10 @@ That's it! Anonify is now up and running on your local machine, ready to help yo
 
 ## Contributors
 
-- **Aditya Raj**
-- **Nabeel Wasif**
-- **Swaraat Chatterjee**
 - **Ritika Keshri**
+- **Aditya Raj**
+- **Swaraat Chatterjee**
+- **Nabeel Wasif**
 
 ## Video Tutorial
 
