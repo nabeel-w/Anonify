@@ -1,7 +1,9 @@
+/*eslint-disable */
 import { useEffect, useState } from "react";
 import MyLottieAnimation from "./Animation";
 import { Review } from "./Review";
 import { io } from "socket.io-client";
+import SampleData from "../assets/Sample_JSON_data.json";
 
 
 function Files() {

@@ -519,6 +519,7 @@ h1 span:nth-child(7) {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   height: 50vh;
   line-height: 1.6;
+  user-select: text !important; 
 }
 
 .text-container button {
@@ -532,13 +533,14 @@ h1 span:nth-child(7) {
   display: inline-block;
   font-size: 14px;
   transition: background-color 0.3s ease;
+  pointer-events: auto; 
 }
 
 .text-container button:hover {
   background-color: #ff0000ba;
 }
 
-.text-container span {
+.text-container p {
   word-wrap: break-word;
   display: inline;
 }
