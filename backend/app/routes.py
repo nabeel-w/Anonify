@@ -2,11 +2,15 @@ from flask import Blueprint, current_app, jsonify, request, send_file, after_thi
 from flask_socketio import emit, join_room
 from . import socketio
 import datetime
-import pypdf
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
 import json
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from io import StringIO
 
 main_bp = Blueprint('main', __name__)
 
@@ -72,6 +76,21 @@ def create_pdf(texts, pdf_path):
     # Save the PDF file
     c.save()
 
+def convert_pdf_to_txt(path):
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, laparams=laparams)
+    with open(path, 'rb') as fp:
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        for page in PDFPage.get_pages(fp, check_extractable=True):
+            interpreter.process_page(page)
+
+    text = retstr.getvalue()
+    device.close()
+    retstr.close()
+    return text
+
 def extract_text_entities(pdf_path, spacy_model, sid, redaction_level="HIGH"):
     nlp = spacy_model
     redaction_levels = {
@@ -93,33 +112,33 @@ def extract_text_entities(pdf_path, spacy_model, sid, redaction_level="HIGH"):
         ]
     }
 
-    with open(pdf_path, 'rb') as file:
-        pdf_reader = pypdf.PdfReader(file)
-        pages = []
+    # Extract the entire text from the PDF
+    full_text = convert_pdf_to_txt(pdf_path)
+    pages = []
+    page_texts = full_text.split('\x0c')
+    total_pages = len(page_texts)
 
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text = page.extract_text(extraction_mode="layout")
+    for page_num, text in enumerate(page_texts):
+        # Emit progress to the client
+        progress = (page_num / total_pages) * 100
+        if sid:
+            socketio.emit('progress', {'progress': progress}, room=sid)
 
-            progress=page_num/len(pdf_reader.pages)*100
-            if sid:
-                socketio.emit('progress', {'progress': progress}, room=sid)
+        if text.strip():  # Skip empty pages
+            # Process the text with spaCy
+            doc = nlp(text)
 
-            if text:
-                # Process the text with spaCy
-                doc = nlp(text)
+            # Create a list of (start, end, entity_text) tuples
+            entities_to_redact = []
+            for ent in doc.ents:
+                if ent.label_ in redaction_levels[redaction_level]:
+                    entities_to_redact.append((ent.start_char, ent.end_char, ent.text))
 
-                # Create a list of (start, end, entity_text) tuples
-                entities_to_redact = []
-                for ent in doc.ents:
-                    if ent.label_ in redaction_levels[redaction_level]:
-                        entities_to_redact.append((ent.start_char, ent.end_char, ent.text))
+            # Sort entities by start position in reverse to avoid issues with overlapping redactions
+            entities_to_redact.sort(key=lambda x: x[0], reverse=True)
+            pages.append((text, entities_to_redact))
 
-                # Sort entities by start position in reverse to avoid issues with overlapping redactions
-                entities_to_redact.sort(key=lambda x: x[0], reverse=True)
-                pages.append((text, entities_to_redact))
-    
-        return pages
+    return pages
 
 def redact_text(pages):
     redacted_pages = []

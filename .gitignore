@@ -26,6 +26,9 @@ coverage/
 /backend/.coverage
 /backend/instance/
 /backend/.env.*
+/backend/model-best/
+/backend/results/
+/backend/uploads/
 
 # Frontend-specific ignores
 /frontend/node_modules/
