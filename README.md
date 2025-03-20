@@ -120,13 +120,6 @@ That's it! Anonify is now up and running on your local machine, ready to help yo
 - **Additional File Formats**: Expanding support for more file types, such as Word documents and spreadsheets.
 - **User Annotations**: Allowing users to manually mark areas for redaction, giving more control over the process.
 
-## Contributors
-
-- **Ritika Keshri**
-- **Aditya Raj**
-- **Swaraat Chatterjee**
-- **Nabeel Wasif**
-
 ## Video Tutorial
 
 Check out our [video tutorial](https://www.youtube.com/watch?v=r-80MlJG5wI) for a step-by-step guide on how to use Anonify.
